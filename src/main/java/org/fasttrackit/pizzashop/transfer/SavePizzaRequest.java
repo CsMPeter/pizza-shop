@@ -1,12 +1,10 @@
-package org.fasttrackit.pizzashop.domain;
+package org.fasttrackit.pizzashop.transfer;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
-@Entity
-public class Pizza {
+public class SavePizzaRequest {
 
     @Id
     @GeneratedValue
@@ -60,7 +58,7 @@ public class Pizza {
 
     @Override
     public String toString() {
-        return "Pizza{" +
+        return "SavePizzaRequest{" +
                 "id=" + id +
                 ", ingredients='" + ingredients + '\'' +
                 ", name='" + name + '\'' +
@@ -69,4 +67,3 @@ public class Pizza {
                 '}';
     }
 }
-
