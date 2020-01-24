@@ -46,20 +46,20 @@ public class PizzaServiceTests {
 
         Pizza retrievedPizza = pizzaService.getPizza(createdPizza.getId());
 
-        assertThat(retrievedPizza,notNullValue());
-        assertThat(createdPizza.getId(),is(retrievedPizza.getId()));
+        assertThat(retrievedPizza, notNullValue());
+        assertThat(createdPizza.getId(), is(retrievedPizza.getId()));
         assertThat(createdPizza.getPrice(), is(retrievedPizza.getPrice()));
         assertThat(createdPizza.getIngredients(), is(retrievedPizza.getIngredients()));
         assertThat(createdPizza.getName(), is(retrievedPizza.getName()));
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void testGetPizza_whenPizzaDoesNotExist_thenThrowResourceNotFound(){
+    public void testGetPizza_whenPizzaDoesNotExist_thenThrowResourceNotFound() {
         pizzaService.getPizza(999999999999999L);
     }
 
     @Test
-    public void testUpdatePizza_whenValidRequest_thenReturnUpdatedPizza(){
+    public void testUpdatePizza_whenValidRequest_thenReturnUpdatedPizza() {
         Pizza createdPizza = createPizza();
 
         SavePizzaRequest request = new SavePizzaRequest();
@@ -69,12 +69,21 @@ public class PizzaServiceTests {
 
         Pizza updatedPizza = pizzaService.updatePizza(createdPizza.getId(), request);
 
-        assertThat(updatedPizza,notNullValue());
-        assertThat(createdPizza.getId(),is(updatedPizza.getId()));
-        assertThat(createdPizza.getPrice(), is(updatedPizza.getPrice()));
-        assertThat(createdPizza.getIngredients(), is(updatedPizza.getIngredients()));
-        assertThat(createdPizza.getName(), is(updatedPizza.getName()));
+        assertThat(updatedPizza, notNullValue());
+       // assertThat(updatedPizza.getId(), is(createdPizza.getId()));
+        assertThat(updatedPizza.getPrice(), is(request.getPrice()));
+        assertThat(updatedPizza.getIngredients(), is(request.getIngredients()));
+        assertThat(updatedPizza.getName(), is(request.getName()));
 
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testDeletePizza_whenExistingPizza_thenProductIsDeleted(){
+        Pizza pizza = createPizza();
+
+        pizzaService.deletePizza(pizza.getId());
+
+        pizzaService.getPizza(pizza.getId());
     }
 
     private Pizza createPizza() {
