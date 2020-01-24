@@ -58,6 +58,25 @@ public class PizzaServiceTests {
         pizzaService.getPizza(999999999999999L);
     }
 
+    @Test
+    public void testUpdatePizza_whenValidRequest_thenReturnUpdatedPizza(){
+        Pizza createdPizza = createPizza();
+
+        SavePizzaRequest request = new SavePizzaRequest();
+        request.setName(createdPizza.getName() + "updated");
+        request.setIngredients(createdPizza.getIngredients() + "updated");
+        request.setPrice(createdPizza.getPrice() + 10);
+
+        Pizza updatedPizza = pizzaService.updatePizza(createdPizza.getId(), request);
+
+        assertThat(updatedPizza,notNullValue());
+        assertThat(createdPizza.getId(),is(updatedPizza.getId()));
+        assertThat(createdPizza.getPrice(), is(updatedPizza.getPrice()));
+        assertThat(createdPizza.getIngredients(), is(updatedPizza.getIngredients()));
+        assertThat(createdPizza.getName(), is(updatedPizza.getName()));
+
+    }
+
     private Pizza createPizza() {
         SavePizzaRequest request = new SavePizzaRequest();
         request.setName("Diavola" + System.currentTimeMillis());
