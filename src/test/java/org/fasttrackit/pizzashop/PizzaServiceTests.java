@@ -51,6 +51,7 @@ public class PizzaServiceTests {
         assertThat(createdPizza.getPrice(), is(retrievedPizza.getPrice()));
         assertThat(createdPizza.getIngredients(), is(retrievedPizza.getIngredients()));
         assertThat(createdPizza.getName(), is(retrievedPizza.getName()));
+        assertThat(createdPizza.getQuantity(), is(retrievedPizza.getQuantity()));
     }
 
     @Test(expected = ResourceNotFoundException.class)
@@ -66,6 +67,7 @@ public class PizzaServiceTests {
         request.setName(createdPizza.getName() + "updated");
         request.setIngredients(createdPizza.getIngredients() + "updated");
         request.setPrice(createdPizza.getPrice() + 10);
+        request.setQuantity(createdPizza.getQuantity() + 10);
 
         Pizza updatedPizza = pizzaService.updatePizza(createdPizza.getId(), request);
 
@@ -91,6 +93,7 @@ public class PizzaServiceTests {
         request.setName("Diavola" + System.currentTimeMillis());
         request.setPrice(20.0);
         request.setIngredients("mozarella, tomato sauce, pepperoni");
+        request.setQuantity(1);
 
         Pizza createdPizza = pizzaService.createPizza(request);
 
@@ -101,6 +104,7 @@ public class PizzaServiceTests {
         assertThat(createdPizza.getIngredients(), is(request.getIngredients()));
         assertThat(createdPizza.getImageUrl(), is(request.getImageUrl()));
         assertThat(createdPizza.getPrice(), is(request.getPrice()));
+        assertThat(createdPizza.getQuantity(), is(request.getQuantity()));
 
         return createdPizza;
     }

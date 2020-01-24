@@ -15,6 +15,8 @@ public class SavePizzaRequest {
     @NotNull
     private Double price;
     private String imageUrl;
+    @NotNull
+    private Integer quantity;
 
     public Long getId() {
         return id;
@@ -56,6 +58,14 @@ public class SavePizzaRequest {
         this.imageUrl = imageUrl;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "SavePizzaRequest{" +
@@ -64,6 +74,7 @@ public class SavePizzaRequest {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", quantity=" + quantity +
                 '}';
     }
 }

@@ -16,6 +16,8 @@ public class Pizza {
     private String name;
     @NotNull
     private Double price;
+    @NotNull
+    private Integer quantity;
     private String imageUrl;
 
     public Long getId() {
@@ -58,6 +60,14 @@ public class Pizza {
         this.imageUrl = imageUrl;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "Pizza{" +
@@ -65,6 +75,7 @@ public class Pizza {
                 ", ingredients='" + ingredients + '\'' +
                 ", name='" + name + '\'' +
                 ", price=" + price +
+                ", quantity=" + quantity +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
