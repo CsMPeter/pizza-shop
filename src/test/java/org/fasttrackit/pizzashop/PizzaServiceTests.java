@@ -1,6 +1,7 @@
 package org.fasttrackit.pizzashop;
 
 import org.fasttrackit.pizzashop.domain.Pizza;
+import org.fasttrackit.pizzashop.exception.ResourceNotFoundException;
 import org.fasttrackit.pizzashop.service.PizzaService;
 import org.fasttrackit.pizzashop.transfer.SavePizzaRequest;
 
@@ -20,36 +21,61 @@ import static org.hamcrest.Matchers.greaterThan;
 @SpringBootTest
 public class PizzaServiceTests {
 
-	@Autowired
-	private PizzaService pizzaService;
+    @Autowired
+    private PizzaService pizzaService;
 
-	@Test
-	public void testCreatePizza_whenValidRequest_thenProductIsSaved() {
+    @Test
+    public void testCreatePizza_whenValidRequest_thenProductIsSaved() {
 
-		SavePizzaRequest request = new SavePizzaRequest();
-		request.setName("Diavola" + System.currentTimeMillis());
-		request.setPrice(20.0);
-		request.setIngredients("mozarella, tomato sauce, pepperoni");
-
-		Pizza createdPizza = pizzaService.createPizza(request);
-
-		assertThat(createdPizza, notNullValue());
-		assertThat(createdPizza.getId(),notNullValue());
-		assertThat(createdPizza.getId(),greaterThan(0L));
-		assertThat(createdPizza.getName(),is(request.getName()));
-		assertThat(createdPizza.getIngredients(),is(request.getIngredients()));
-		assertThat(createdPizza.getImageUrl(),is(request.getImageUrl()));
-		assertThat(createdPizza.getPrice(),is(request.getPrice()));
+        createPizza();
 
 
-	}
+    }
 
-	@Test(expected = TransactionSystemException.class)
-	public void testCreateProduct_whenInvalidRequest_thenThrowException(){
-		SavePizzaRequest request = new SavePizzaRequest();
-		//leaving request properties with null values tovalidate the negative flow
+    @Test(expected = TransactionSystemException.class)
+    public void testCreateProduct_whenInvalidRequest_thenThrowException() {
+        SavePizzaRequest request = new SavePizzaRequest();
+        //leaving request properties with null values to validate the negative flow
 
-		pizzaService.createPizza(request);
-	}
+        pizzaService.createPizza(request);
+    }
+
+    @Test
+    public void testGetPizza_whenExistingPizza_thenRetrievePizza() {
+        Pizza createdPizza = createPizza();
+
+        Pizza retrievedPizza = pizzaService.getPizza(createdPizza.getId());
+
+        assertThat(retrievedPizza,notNullValue());
+        assertThat(createdPizza.getId(),is(retrievedPizza.getId()));
+        assertThat(createdPizza.getPrice(), is(retrievedPizza.getPrice()));
+        assertThat(createdPizza.getIngredients(), is(retrievedPizza.getIngredients()));
+        assertThat(createdPizza.getName(), is(retrievedPizza.getName()));
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testGetPizza_whenPizzaDoesNotExist_thenThrowResourceNotFound(){
+        pizzaService.getPizza(999999999999999L);
+    }
+
+    private Pizza createPizza() {
+        SavePizzaRequest request = new SavePizzaRequest();
+        request.setName("Diavola" + System.currentTimeMillis());
+        request.setPrice(20.0);
+        request.setIngredients("mozarella, tomato sauce, pepperoni");
+
+        Pizza createdPizza = pizzaService.createPizza(request);
+
+        assertThat(createdPizza, notNullValue());
+        assertThat(createdPizza.getId(), notNullValue());
+        assertThat(createdPizza.getId(), greaterThan(0L));
+        assertThat(createdPizza.getName(), is(request.getName()));
+        assertThat(createdPizza.getIngredients(), is(request.getIngredients()));
+        assertThat(createdPizza.getImageUrl(), is(request.getImageUrl()));
+        assertThat(createdPizza.getPrice(), is(request.getPrice()));
+
+        return createdPizza;
+    }
+
 
 }
