@@ -3,7 +3,10 @@ package org.fasttrackit.pizzashop.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Pizza {
@@ -19,6 +22,10 @@ public class Pizza {
     @NotNull
     private Integer quantity;
     private String imageUrl;
+
+    //pizzas is the name of the property in cart where we defined the relationship
+    @ManyToMany(mappedBy = "pizzas")
+    private Set<Cart> carts = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -68,6 +75,14 @@ public class Pizza {
         this.quantity = quantity;
     }
 
+    public Set<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(Set<Cart> carts) {
+        this.carts = carts;
+    }
+
     @Override
     public String toString() {
         return "Pizza{" +
@@ -78,6 +93,21 @@ public class Pizza {
                 ", quantity=" + quantity +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pizza pizza = (Pizza) o;
+
+        return id.equals(pizza.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
 

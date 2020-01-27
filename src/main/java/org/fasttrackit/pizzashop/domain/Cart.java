@@ -1,6 +1,8 @@
 package org.fasttrackit.pizzashop.domain;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Cart {
@@ -11,6 +13,12 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private Customer customer;
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "cart_pizza",
+    joinColumns = @JoinColumn(name = "cart_id"),
+    inverseJoinColumns = @JoinColumn(name = "pizza_id"))
+    private Set<Pizza> pizzas = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -28,11 +36,34 @@ public class Cart {
         this.customer = customer;
     }
 
+    public Set<Pizza> getPizzas() {
+        return pizzas;
+    }
+
+    public void setPizzas(Set<Pizza> pizzas) {
+        this.pizzas = pizzas;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
                 "id=" + id +
                 ", customer=" + customer +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cart cart = (Cart) o;
+
+        return id.equals(cart.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
