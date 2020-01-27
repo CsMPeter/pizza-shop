@@ -3,6 +3,7 @@ package org.fasttrackit.pizzashop;
 import org.fasttrackit.pizzashop.domain.Pizza;
 import org.fasttrackit.pizzashop.exception.ResourceNotFoundException;
 import org.fasttrackit.pizzashop.service.PizzaService;
+import org.fasttrackit.pizzashop.steps.PizzaSteps;
 import org.fasttrackit.pizzashop.transfer.SavePizzaRequest;
 
 import org.junit.Test;
@@ -24,10 +25,13 @@ public class PizzaServiceTests {
     @Autowired
     private PizzaService pizzaService;
 
+    @Autowired
+    private PizzaSteps pizzaSteps;
+
     @Test
     public void testCreatePizza_whenValidRequest_thenProductIsSaved() {
 
-        createPizza();
+        pizzaSteps.createPizza();
 
 
     }
@@ -42,7 +46,7 @@ public class PizzaServiceTests {
 
     @Test
     public void testGetPizza_whenExistingPizza_thenRetrievePizza() {
-        Pizza createdPizza = createPizza();
+        Pizza createdPizza = pizzaSteps.createPizza();
 
         Pizza retrievedPizza = pizzaService.getPizza(createdPizza.getId());
 
@@ -61,7 +65,7 @@ public class PizzaServiceTests {
 
     @Test
     public void testUpdatePizza_whenValidRequest_thenReturnUpdatedPizza() {
-        Pizza createdPizza = createPizza();
+        Pizza createdPizza = pizzaSteps.createPizza();
 
         SavePizzaRequest request = new SavePizzaRequest();
         request.setName(createdPizza.getName() + "updated");
@@ -81,33 +85,14 @@ public class PizzaServiceTests {
 
     @Test(expected = ResourceNotFoundException.class)
     public void testDeletePizza_whenExistingPizza_thenProductIsDeleted(){
-        Pizza pizza = createPizza();
+        Pizza pizza = pizzaSteps.createPizza();
 
         pizzaService.deletePizza(pizza.getId());
 
         pizzaService.getPizza(pizza.getId());
     }
 
-    private Pizza createPizza() {
-        SavePizzaRequest request = new SavePizzaRequest();
-        request.setName("Diavola" + System.currentTimeMillis());
-        request.setPrice(20.0);
-        request.setIngredients("mozarella, tomato sauce, pepperoni");
-        request.setQuantity(1);
 
-        Pizza createdPizza = pizzaService.createPizza(request);
-
-        assertThat(createdPizza, notNullValue());
-        assertThat(createdPizza.getId(), notNullValue());
-        assertThat(createdPizza.getId(), greaterThan(0L));
-        assertThat(createdPizza.getName(), is(request.getName()));
-        assertThat(createdPizza.getIngredients(), is(request.getIngredients()));
-        assertThat(createdPizza.getImageUrl(), is(request.getImageUrl()));
-        assertThat(createdPizza.getPrice(), is(request.getPrice()));
-        assertThat(createdPizza.getQuantity(), is(request.getQuantity()));
-
-        return createdPizza;
-    }
 
 
 }

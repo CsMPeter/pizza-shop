@@ -1,5 +1,6 @@
 package org.fasttrackit.pizzashop.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fasttrackit.pizzashop.domain.Pizza;
 import org.fasttrackit.pizzashop.exception.ResourceNotFoundException;
 import org.fasttrackit.pizzashop.persistence.PizzaRepository;
@@ -18,20 +19,24 @@ public class PizzaService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
     private final PizzaRepository pizzaRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public PizzaService(PizzaRepository pizzaRepository) {
+    public PizzaService(PizzaRepository pizzaRepository, ObjectMapper objectMapper) {
         this.pizzaRepository = pizzaRepository;
+        this.objectMapper = objectMapper;
     }
 
     public Pizza createPizza(SavePizzaRequest request) {
         LOGGER.info("Creating pizza {}", request);
-        Pizza pizza = new Pizza();
-        pizza.setName(request.getName());
-        pizza.setImageUrl(request.getImageUrl());
-        pizza.setIngredients(request.getIngredients());
-        pizza.setPrice(request.getPrice());
-        pizza.setQuantity(request.getQuantity());
+        Pizza pizza = objectMapper.convertValue(request,Pizza.class);
+
+//        Pizza pizza = new Pizza();
+//        pizza.setName(request.getName());
+//        pizza.setImageUrl(request.getImageUrl());
+//        pizza.setIngredients(request.getIngredients());
+//        pizza.setPrice(request.getPrice());
+//        pizza.setQuantity(request.getQuantity());
 
         return pizzaRepository.save(pizza);
     }
