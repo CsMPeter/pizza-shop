@@ -5,14 +5,20 @@ import org.fasttrackit.pizzashop.domain.Pizza;
 import org.fasttrackit.pizzashop.exception.ResourceNotFoundException;
 import org.fasttrackit.pizzashop.persistence.PizzaRepository;
 import org.fasttrackit.pizzashop.transfer.GetPizzasRequest;
+import org.fasttrackit.pizzashop.transfer.PizzaResponse;
 import org.fasttrackit.pizzashop.transfer.SavePizzaRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PizzaService {
@@ -47,15 +53,35 @@ public class PizzaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Pizza " + id + " does not exist."));
     }
 
-    public Page<Pizza> getPizzas(GetPizzasRequest request, Pageable pageable){
+    @Transactional
+    public Page<PizzaResponse> getPizzas(GetPizzasRequest request, Pageable pageable){
         LOGGER.info("Retrieving products: {}",request);
+
+        Page<Pizza> pizzas;
+
         if(request != null && request.getPartialName() != null && request.getMinQuantity() != null)
-            return pizzaRepository.findByNameContainingAndQuantityGreaterThanEqual(
+            pizzas = pizzaRepository.findByNameContainingAndQuantityGreaterThanEqual(
                     request.getPartialName(),request.getMinQuantity(),pageable);
         else if(request != null && request.getPartialName() != null)
-            return pizzaRepository.findByNameContaining(request.getPartialName(),pageable);
+            pizzas = pizzaRepository.findByNameContaining(request.getPartialName(),pageable);
         else
-            return pizzaRepository.findAll(pageable);
+            pizzas = pizzaRepository.findAll(pageable);
+
+        List<PizzaResponse> pizzaResponses = new ArrayList<>();
+
+        for(Pizza pizza : pizzas.getContent()){
+            PizzaResponse pizzaResponse = new PizzaResponse();
+            pizzaResponse.setId(pizza.getId());
+            pizzaResponse.setName(pizza.getName());
+            pizzaResponse.setPrice(pizza.getPrice());
+            pizzaResponse.setIngredients(pizza.getIngredients());
+            pizzaResponse.setQuantity(pizza.getQuantity());
+            pizzaResponse.setImageUrl(pizza.getImageUrl());
+
+            pizzaResponses.add(pizzaResponse);
+        }
+
+        return new PageImpl<>(pizzaResponses,pageable,pizzas.getTotalElements());
     }
 
     public Pizza updatePizza(long id, SavePizzaRequest request) {

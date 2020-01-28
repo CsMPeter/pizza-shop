@@ -3,6 +3,7 @@ package org.fasttrackit.pizzashop.web;
 import org.fasttrackit.pizzashop.domain.Pizza;
 import org.fasttrackit.pizzashop.service.PizzaService;
 import org.fasttrackit.pizzashop.transfer.GetPizzasRequest;
+import org.fasttrackit.pizzashop.transfer.PizzaResponse;
 import org.fasttrackit.pizzashop.transfer.SavePizzaRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,8 +40,8 @@ public class PizzaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Pizza>> getPizzas(GetPizzasRequest request, Pageable pageable) {
-        Page<Pizza> pizzas = pizzaService.getPizzas(request, pageable);
+    public ResponseEntity<Page<PizzaResponse>> getPizzas(GetPizzasRequest request, Pageable pageable) {
+        Page<PizzaResponse> pizzas = pizzaService.getPizzas(request, pageable);
         return new ResponseEntity<>(pizzas, HttpStatus.OK);
     }
 
