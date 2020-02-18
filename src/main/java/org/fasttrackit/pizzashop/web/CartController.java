@@ -27,6 +27,13 @@ public class CartController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping
+    public ResponseEntity removePizzaFromCart(@RequestBody @Valid AddPizzaToCartRequest request){
+        cartService.removePizzaFromCart(request);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CartResponse> getCart(@PathVariable long id){
 

@@ -59,6 +59,18 @@ public class CartService {
     }
 
     @Transactional
+    public void removePizzaFromCart(AddPizzaToCartRequest request) {
+        LOGGER.info("Remove pizza from cart: ()", request);
+        Cart cart = cartRepository.findById(request.getCustomerId())
+                .orElse(new Cart());
+
+        Pizza pizza = pizzaService.getPizza(request.getPizzaId());
+        cart.removeFromCart(pizza);
+
+        cartRepository.save(cart);
+    }
+
+    @Transactional
     public CartResponse getCart(long id){
         LOGGER.info("Retrieving cart {}",id);
         Cart cart = cartRepository.findById(id)
@@ -78,7 +90,7 @@ public class CartService {
             pizzaResponse.setId(pizza.getId());
             pizzaResponse.setName(pizza.getName());
             pizzaResponse.setPrice(pizza.getPrice());
-
+            pizzaResponse.setImageUrl(pizza.getImageUrl());
             pizzasInCart.add(pizzaResponse);
         }
 
